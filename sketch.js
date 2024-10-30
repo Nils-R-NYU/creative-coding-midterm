@@ -5,7 +5,7 @@ const managers = [];
 function setup() {
   createCanvas(800, 800);
   setFrameRate(fps);
-  primaryManager = new FireManager(fps, false, 200, 50, true, 400, 650);
+  primaryManager = new FireManager(fps, false, 250, 50, true, 400, 650);
 }
 
 function draw() {
@@ -23,9 +23,17 @@ function draw() {
 function keyPressed() {
   if (key == " ") {
     primaryManager.createEmber();
+  } else if (key == "l") {
+    primaryManager.lightAll();
+  } else if (key == "e") {
+    primaryManager.extinguish();
   }
 }
 
 function mousePressed() {
-  managers.push(new FireManager(fps, false, 50, 50, true, mouseX, mouseY));
+  primaryManager.setFrenzyMode(true);
+}
+
+function mouseReleased() {
+  primaryManager.setFrenzyMode(false);
 }

@@ -9,6 +9,8 @@ class FireManager {
     staticY
   ) {
     this.embers = [];
+    this.out = false;
+    this.frenzy = false;
     this.fps = fps;
     this.followMouse = followMouse;
     this.staticMode = staticMode;
@@ -53,14 +55,40 @@ class FireManager {
       y = this.staticY + yOffset;
     }
 
-    const newEmber = new Ember(this, x, y, jitter, jitterFrequency, fps);
+    const newEmber = new Ember(
+      this,
+      x,
+      y,
+      jitter,
+      jitterFrequency,
+      fps,
+      this.frenzy
+    );
     this.embers.push(newEmber);
   }
 
   removeEmber(ember) {
     this.embers = this.embers.filter((e) => e !== ember);
+    if (this.out) {
+      return;
+    }
     this.createEmber();
     if (Math.random() > 0.7) {
+      this.createEmber();
+    }
+  }
+
+  setFrenzyMode(frenzy) {
+    this.frenzy = frenzy;
+  }
+
+  extinguish() {
+    this.out = true;
+  }
+
+  lightAll() {
+    this.out = false;
+    for (var i = 0; i < this.emberLimit; i++) {
       this.createEmber();
     }
   }

@@ -3,7 +3,7 @@ let primaryManager;
 const managers = [];
 
 function setup() {
-  createCanvas(800, 800);
+  createCanvas(800, 1200);
   setFrameRate(fps);
   primaryManager = new FireManager(fps, false, 250, 50, true, 400, 650);
 }

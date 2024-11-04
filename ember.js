@@ -1,8 +1,18 @@
 class Ember {
-  constructor(manager, x, y, jitterRange, jitterFrequency, fps, frenzy) {
+  constructor(
+    manager,
+    x,
+    y,
+    jitterRange,
+    jitterFrequency,
+    fps,
+    frenzy,
+    skipNewEmber
+  ) {
     this.manager = manager;
     this.x = x;
     this.y = y;
+    this.skipNewEmber = skipNewEmber;
     this.velocity = createVector(0, 0);
     this.lift = createVector(0, -1 * (Math.random() + 0.3));
     this.jitterRange = jitterRange;
@@ -14,7 +24,7 @@ class Ember {
     this.invertedX = Math.random() > 0.5;
     this.sizeStart = 7;
     this.sizeEnd = 1;
-    this.colorStart = color("#ffffff");
+    this.colorStart = color("#fefe9a");
     this.colorEnd = color("#e7641d");
 
     if (frenzy) {

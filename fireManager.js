@@ -31,10 +31,24 @@ class FireManager {
     for (var i = 0; i < this.embers.length; i++) {
       this.embers[i].show();
     }
+
+    this.drawGlow();
   }
 
-  createEmber() {
-    if (this.embers.length >= this.emberLimit) {
+  setEmberLimit(limit) {
+    this.emberLimit = limit;
+  }
+
+  relight() {
+    this.out = false;
+    this.createEmber();
+  }
+
+  createEmber(forceSpawn = false) {
+    if (
+      this.embers.filter((e) => !e.skipNewEmber).length >= this.emberLimit &&
+      !forceSpawn
+    ) {
       return;
     }
 
@@ -62,14 +76,15 @@ class FireManager {
       jitter,
       jitterFrequency,
       fps,
-      this.frenzy
+      this.frenzy,
+      forceSpawn
     );
     this.embers.push(newEmber);
   }
 
   removeEmber(ember) {
     this.embers = this.embers.filter((e) => e !== ember);
-    if (this.out) {
+    if (this.out || ember.skipNewEmber) {
       return;
     }
     this.createEmber();
@@ -88,8 +103,37 @@ class FireManager {
 
   lightAll() {
     this.out = false;
-    for (var i = 0; i < this.emberLimit; i++) {
+    for (let i = 0; i < this.emberLimit; i++) {
       this.createEmber();
     }
+  }
+
+  poke() {
+    console.log("poking");
+    for (let i = 0; i <= 50; i++) {
+      this.createEmber(true);
+    }
+  }
+
+  drawGlow() {
+    push();
+    noStroke();
+
+    const glowSize = 20 + this.embers.length;
+    console.log(glowSize, this.embers.length);
+    let ctx = drawingContext;
+    let gradient = ctx.createRadialGradient(
+      this.staticX,
+      this.staticY,
+      0,
+      this.staticX,
+      this.staticY,
+      glowSize / 2
+    );
+    gradient.addColorStop(0, "rgba(255, 50, 30, 0.4)");
+    gradient.addColorStop(1, "rgba(255, 50, 30, 0)");
+    ctx.fillStyle = gradient;
+    rect(0, this.staticY - 200, width, 215);
+    pop();
   }
 }

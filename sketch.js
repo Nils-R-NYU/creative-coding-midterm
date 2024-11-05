@@ -1,21 +1,19 @@
 const fps = 30;
-let primaryManager;
-const managers = [];
-const dots = [];
+let fireManager;
 counter = 0;
 
 function setup() {
   createCanvas(800, 1200);
   setFrameRate(fps);
-  primaryManager = new FireManager(fps, false, 25, 50, true, 400, 650);
+  fireManager = new FireManager(fps, false, 25, 50, true, 400, 650);
 }
 
 function draw() {
   background(0);
-  updateManager();
+  updateManager(); // This is responsible for the dynamic changes to the fire
 
-  primaryManager.update();
-  primaryManager.show();
+  fireManager.update(); // Update all particle positions
+  fireManager.show(); // Draw all particles
 
   for (var i = 0; i < managers.length; i++) {
     managers[i].update();
@@ -28,47 +26,51 @@ function draw() {
 function updateManager() {
   counter++;
 
-  if ((counter - 120) % (60 * 5) == 0) {
-    primaryManager.poke();
+  if ((counter - fps * 2) % (fps * 5) == 0) {
+    // "Poke" the fire every 5 seconds, but make the first "poke" happen after 3 seconds
+    fireManager.poke();
   }
 
   if (counter / fps == 10) {
-    primaryManager.setEmberLimit(10);
+    // Ater 10 seconds decrease the amount of embers to 10
+    fireManager.setEmberLimit(10);
   } else if (counter / fps == 15) {
-    primaryManager.setEmberLimit(50);
+    // After 15 increase it to 50 again
+    fireManager.setEmberLimit(50);
   } else if (counter / fps == 20) {
-    primaryManager.extinguish();
+    // Extinguish the flame after 20 seconds
+    fireManager.extinguish();
   } else if (counter / fps == 25) {
-    primaryManager.relight();
-  } else if (counter / fps == 30) {
+    // Relight it after 25
+    fireManager.relight();
   }
 
-  if (counter > fps * 40) {
+  if (counter > fps * 30) {
+    // After 30 seconds, reset the counter so the changes loop
     counter = 0;
   }
 }
 
 function keyPressed() {
-  if (key == " ") {
-    primaryManager.createEmber();
-  } else if (key == "l") {
-    primaryManager.lightAll();
+  if (key == "l") {
+    fireManager.lightAll();
   } else if (key == "e") {
-    primaryManager.extinguish();
+    fireManager.extinguish();
   } else if (key == "p") {
-    primaryManager.poke();
+    fireManager.poke();
   }
 }
 
 function mousePressed() {
-  primaryManager.setFrenzyMode(true);
+  fireManager.setFrenzyMode(true); // Frenzy mode makes the fire go faster
 }
 
 function mouseReleased() {
-  primaryManager.setFrenzyMode(false);
+  fireManager.setFrenzyMode(false);
 }
 
 function drawLogs() {
+  // Drawing all the shapes for the sticks/logs of the campfire
   noStroke();
   fill(color(0, 0, 0));
 
